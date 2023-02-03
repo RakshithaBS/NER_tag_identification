@@ -1,0 +1,5 @@
+spacy
+joblib
+sklearn_crfsuite
+mlflow
+sklearn
