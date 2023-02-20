@@ -1,0 +1,6 @@
+{
+    "re_process_raw_data": true,
+    "re_process_features": true,
+    "train_model":false,
+    "write_dictionary":true
+}

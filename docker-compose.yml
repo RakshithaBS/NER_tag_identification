@@ -1,0 +1,30 @@
+
+# By default this is uses sqlite3 as a db. To change it to postgres we need to create a container and 
+version: '3'
+
+services:
+  airflow-webserver:
+    build: ./docker/airflow
+    container_name: airflow-webserver
+    volumes:
+      - ./dags:/opt/airflow/dags
+    ports:
+      - "8080:8080"
+    networks:
+      - mynet   
+    restart: always 
+
+  mlflow:
+   build: ./docker/mlflow
+   container_name: mlflow
+   ports:
+    - "5000:5000"
+   networks:
+     - mynet
+
+# adding both containers to a shared network
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+      driver: default

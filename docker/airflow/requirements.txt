@@ -1,0 +1,7 @@
+spacy
+joblib
+sklearn_crfsuite
+mlflow==1.30.0
+protobuf==3.20.*
+scikit-learn
+
