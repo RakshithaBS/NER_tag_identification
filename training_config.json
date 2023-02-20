@@ -1,6 +1,0 @@
-{
-    "re_process_raw_data": false,
-    "re_process_features": false,
-    "train_model":true,
-    "write_dictionary":false
-}
