@@ -12,9 +12,11 @@
 The project focuses on building pipelines for data-preprocessing, training and testing using airflow. The goal of the project is to identify the diseases and treatments 
 from the input text. Ex:
 
+```
 Clinical Note: “The patient was a 62-year-old man with squamous cell lung cancer, which was first successfully treated by a combination of radiation therapy and chemotherapy.”
 Disease:  Lung Cancer
 Treatment: Radiation Therapy and Chemotherapy
+```
 
 A conditional random field model is used to train on the text data to predict the NER Tags: O,T, and (i.e others, treatments and diseases) respectively.
 
@@ -33,21 +35,72 @@ Hence the business KPI addressed in this project is to automate the extraction o
 * Data pre-processing 
  - the train sentence had each word in one line. The first step was to form sentences. The pre-processing was applied on the labels data.
  - EDA on most of common nouns and pronouns used
+
+```javascript
  ('patients', 492), ('treatment', 281), ('%', 247), ('cancer', 200), 
 ('therapy', 175), ('study', 154), ('disease', 142), ('cell', 140), 
 ('lung', 116), ('group', 93)
+```
 
  - Following features were extracted to feed into to the CRF model :
- 
+ ```
  word.lower','word.isupper','word.pos','word[-3:]', 'word[-2:]',
  'word.digit','word.startsWithCapital' ,'word.previous_pos',
  'word.previous.startsWithCapital','word.previous.digit',
 'word.previous.isupper','word.beg’,'word.end
- 
+ ```
  * CRF model from sklearn_crfsuite module was used to train on the features. Model performed well with a F1 score of 0.89.
  
  * The pre-processing, training and testing steps were automated using airflow DAGS. The model was tracked in mlflow.
  
 ## Setup 
+
+### Setup using docker
+
+1. Docker installation: https://docs.docker.com/engine/install/
+2. run docker-compose up
+3. Once the containers are running , go to the airflow container terminal using ``` docker exec -it airflow-webserver/bin/bash ```
+ run the below commands
+ * to create airflow user 
+    ``` airflow users create \
+    --username <username>\
+    --firstname <firstname>\
+    --lastname <last name>\
+    --role Admin \
+    --email <email>\
+    --password <pwd>
+    ```
+ * airflow scheduler - which will trigger the airflow dags 
+ 
+ **Note**:
+ * airflow container is used to run the airflow webserver on port 8080
+ * mlflow container is used to serve as MLflow tracking server
+ * Both the containers are on the same network
+ 
+###  Setup without docker
+
+1. install airflow
+ ```pip install airflow```
+2. install mlflow
+ ```pip install mlflow```
+3. run below commands to initalize airflow db, create user and start the airflow webserver
+   ```airflow db init
+   
+      airflow users create \
+    --username <username>\
+    --firstname <firstname>\
+    --lastname <last name>\
+    --role Admin \
+    --email <email>\
+    --password <pwd>
+    
+     airflow webserver -p   
+    ```
+5. run below command to start the mlflow tracking server
+   ```
+   mlflow server --backend-store-uri='sqlite:///Lead_scoring_mlflow_production.db' --default-artifact-root="mlruns/" --port=6007 --host=0.0.0.0
+   ```
+
+   
 
 
